@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Usuario</title>
+</head>
+<body>
+    <h1>Eliminar Usuario</h1>
+    <p>¿Estás seguro de que deseas eliminar este usuario?</p>
+
+    <button id="deleteButton">Eliminar</button>
+
+    <script>
+        // Recuperar el id del usuario desde la URL (por ejemplo, eliminar.html?id=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+
+        // Enviar la solicitud DELETE para eliminar el usuario
+        document.getElementById('deleteButton').addEventListener('click', function () {
+            fetch(`/api/eliminar/${userId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Usuario eliminado');
+                window.location.href = '/'; // Redirigir al listado de usuarios
+            })
+            .catch(error => {
+                console.error('Error al eliminar usuario:', error);
+            });
+        });
+    </script>
+</body>
+</html>

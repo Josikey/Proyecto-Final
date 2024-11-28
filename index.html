@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios Registrados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .add-user {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .edit-user {
+            background-color: #2196F3;
+            color: white;
+        }
+        .delete-user {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuarios</h1>
+    <button class="add-user" onclick="location.href='agregar.html'">Agregar Usuario</button>
+    <p>A continuación se muestra la información de los usuarios registrados:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo Electrónico</th>
+                <th>Fecha de Registro</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            <!-- Aquí se rellenará la tabla dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        // Referencia al cuerpo de la tabla
+        const userTable = document.getElementById('userTable');
+
+        // Función para cargar usuarios desde el servidor
+        async function cargarUsuarios() {
+            try {
+                const response = await fetch('/api/usuarios');
+                if (!response.ok) throw new Error('Error al obtener usuarios.');
+
+                const usuarios = await response.json();
+                usuarios.forEach(usuario => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${usuario.id}</td>
+                        <td>${usuario.nombre}</td>
+                        <td>${usuario.correo}</td>
+                        <td>${usuario.fecha}</td>
+                        <td class="action-buttons">
+                            <button class="edit-user" onclick="location.href='editar.html?id=${usuario.id}'">Editar</button>
+                            <button class="delete-user" onclick="location.href='eliminar.html?id=${usuario.id}'">Eliminar</button>
+                        </td>
+                    `;
+                    userTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Hubo un problema al cargar los usuarios.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        cargarUsuarios();
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario</title>
+</head>
+<body>
+    <h1>Editar Usuario</h1>
+    <form id="editForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre"><br><br>
+
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" name="correo"><br><br>
+
+        <label for="fecha">Fecha de Registro:</label>
+        <input type="date" id="fecha" name="fecha"><br><br>
+
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <script>
+        // Recuperar el id del usuario desde la URL (por ejemplo, editar.html?id=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+
+        // Rellenar el formulario con los datos del usuario
+        fetch(`/api/usuarios/${userId}`)
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('nombre').value = user.nombre;
+                document.getElementById('correo').value = user.correo;
+                document.getElementById('fecha').value = user.fecha;
+            });
+
+        // Enviar la solicitud PUT para actualizar el usuario
+        document.getElementById('editForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const correo = document.getElementById('correo').value;
+            const fecha = document.getElementById('fecha').value;
+
+            fetch(`/api/editar/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nombre, correo, fecha })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Usuario actualizado');
+                window.location.href = '/'; // Redirigir al listado de usuarios
+            })
+            .catch(error => {
+                console.error('Error al actualizar usuario:', error);
+            });
+        });
+    </script>
+</body>
+</html>
